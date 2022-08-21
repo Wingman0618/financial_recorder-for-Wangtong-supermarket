@@ -18,16 +18,29 @@ public class Page{
 	private int current;
 	private Console console = System.console();
 	protected PageOperation operation;
+	private Date iniDate;
 	
 	public void initializePage(){
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			iniDate = simpleDateFormat.parse("1111-11-11");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 		this.pagename = console.readLine("Please input the name of the page: ");
+		this.page = new Line[16];
 		initializeLine();
 	}
 
 	public void initializeLine(){
-		this.page = new Line[16];
+		
 		for(int i = 0; i <16; i++){
 			page[i] = new Line();
+			page[i].setAbstract("-");
+			page[i].setDate(iniDate);
+			page[i].setIncome(0);
+			page[i].setExpense(0);
+			page[i].setID(0);
 		}
 		current = 0;
 	}
@@ -37,6 +50,10 @@ public class Page{
 			for(int i = 0; i <16; i++){
 				if(page[i].getID() == id){
 					page[i] = new Line();
+					page[i].setAbstract("-");
+					page[i].setDate(iniDate);
+					page[i].setIncome(0);
+					page[i].setExpense(0);
 					page[i].setID(id);
 					return;
 				}
@@ -126,13 +143,12 @@ public class Page{
 					String expense = Double.toString(l.getExpense());
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					Date d = l.getDate();
-					System.out.println(d);
 					String date = sdf.format(d);
 					fw.write(id + "|"+date + "|"+l.getAbstract() +"|"+ income +"|"+ expense + "\n");
 					fw.flush();
 				}
-				System.out.println("Saved");
 				fw.close();
+				System.out.println("Saved");
 			}
 			catch(Exception e){
 				e.printStackTrace();
