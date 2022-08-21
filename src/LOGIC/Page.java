@@ -106,6 +106,8 @@ public class Page{
 			page[current].setExpense(expense);
 			page[current].setID(id);
 			page[current].setIncome(income);
+			overall = overall + income;
+			overall = overall - expense;
 			current++;
 		}
 		else{
@@ -144,14 +146,7 @@ public class Page{
 	}
 
 	public double calculate(){
-		double c = 0;
-		for(int i = 0; i< 16; i++){
-			if(page[i] == null){
-				break;
-			}
-			c = c + page[i].getIncome() - page[i].getExpense();
-		}
-		return c;
+		return overall;
 	}
 
 	public Line getLine(int id){
