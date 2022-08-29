@@ -21,7 +21,7 @@ public class Page_UI{
 
         line.setLayout(null);
         line.setPreferredSize(new Dimension(800, 100));
-        bottom.setPreferredSize(new Dimension(800, 100));
+        bottom.setPreferredSize(new Dimension(800, 40));
 
         JLabel id = new JLabel("ID number");
         JLabel date = new JLabel("MM/DD");
@@ -39,9 +39,11 @@ public class Page_UI{
         JButton btn_delete = new JButton("delete");
         JButton btn_save = new JButton("save");
         JButton btn_print = new JButton("print");
+        JButton btn_new = new JButton("new page");
         JLabel overall = new JLabel("Overall: ");
         bottom.add(btn_delete);
         bottom.add(btn_save);
+        bottom.add(btn_new);
         bottom.add(btn_print);
         bottom.add(overall);
 
@@ -75,6 +77,8 @@ public class Page_UI{
         DefaultTableModel pageTableM = new DefaultTableModel(rowData, columnNames);
         pageTableM.removeRow(0);
         JTable pageTable = new JTable(pageTableM);
+        pageTable.setRowHeight(25);
+        //pageTable.getTableHeader()
         pageTable.getColumnModel().getColumn(0).setPreferredWidth(55);
         pageTable.getColumnModel().getColumn(1).setPreferredWidth(55);
         pageTable.getColumnModel().getColumn(2).setPreferredWidth(200);
@@ -91,24 +95,30 @@ public class Page_UI{
         btn_add.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 Pattern p = Pattern.compile("^[-\\+]?[\\d]*$");
-                if(id_TF.getText().equals("")||(p.matcher(id_TF.getText()).matches()==false)){
-                    JOptionPane.showMessageDialog(null, "Please input Id number or input invalid");
-                }else if(date_TF.getText().equals("")){
-                    JOptionPane.showMessageDialog(null, "Please input date or input invalid");
-                }else if(message_TF.getText().equals("")){
-                    JOptionPane.showMessageDialog(null, "Please input message or input invalid");
-                }else if(income_TF.getText().equals("")){
-                    JOptionPane.showMessageDialog(null, "Please input income or input invalid");
-                }else if(expend_TF.getText().equals("")){
-                    JOptionPane.showMessageDialog(null, "Please input expend or input invalid");
+                if(pageTable.getRowCount()>15){
+                    JOptionPane.showMessageDialog(null, "page is full, please add new page");
                 }else{
-                    String data[] = {id_TF.getText(), date_TF.getText(), message_TF.getText(), income_TF.getText(), expend_TF.getText()};
-                    pageTableM.addRow(data);
-                    id_TF.setText(String.valueOf((Integer.valueOf(id_TF.getText())+1)));
-                    date_TF.setText("");
-                    message_TF.setText("");
-                    income_TF.setText("");
-                    expend_TF.setText("");
+                    if(id_TF.getText().equals("")||(p.matcher(id_TF.getText()).matches()==false)){
+                        JOptionPane.showMessageDialog(null, "Please input Id number or input invalid");
+                    }else if(date_TF.getText().equals("")){
+                        JOptionPane.showMessageDialog(null, "Please input date or input invalid");
+                    }else if(message_TF.getText().equals("")){
+                        JOptionPane.showMessageDialog(null, "Please input message or input invalid");
+                    }else{
+                        if(income_TF.getText().equals("")){
+                            income_TF.setText("0");
+                        }
+                        if(expend_TF.getText().equals("")){
+                            expend_TF.setText("0");
+                        }
+                        String data[] = {id_TF.getText(), date_TF.getText(), message_TF.getText(), income_TF.getText(), expend_TF.getText()};
+                        pageTableM.addRow(data);
+                        id_TF.setText(String.valueOf((Integer.valueOf(id_TF.getText())+1)));
+                        date_TF.setText(date_TF.getText());
+                        message_TF.setText("");
+                        income_TF.setText("");
+                        expend_TF.setText("");
+                    }
                 }
             }
         });
@@ -121,13 +131,15 @@ public class Page_UI{
                     JOptionPane.showMessageDialog(null, "Input invalid");
                 }else{
                     int row = Integer.valueOf(input);
+                    pageTable.setEnabled(true);
                     if(row<=pageTable.getRowCount()){
                         for(int n=1; n<5;n++){
-                            pageTable.setValueAt("", row-1, n);
+                            pageTableM.setValueAt("", row-1, n);
                         }
                     }else{
                         JOptionPane.showMessageDialog(null, "ID is not found!");
                     }
+                    pageTable.setEnabled(false);
                 }
             }
         });
@@ -140,6 +152,20 @@ public class Page_UI{
                     p.addLine((String)pageTable.getValueAt(i, 0),(String)pageTable.getValueAt(i, 1),(String)pageTable.getValueAt(i, 2),(String)pageTable.getValueAt(i, 3),(String)pageTable.getValueAt(i, 4));
                 }
                 p.savePage(filename);
+            }
+        });
+
+        btn_new.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                id_TF.setText("");
+                date_TF.setText("");
+                message_TF.setText("");
+                income_TF.setText("");
+                expend_TF.setText("");
+                int rowCount = pageTableM.getRowCount();
+                for(int i=0; i<rowCount; i++){
+                    pageTableM.removeRow(0);
+                }
             }
         });
 
