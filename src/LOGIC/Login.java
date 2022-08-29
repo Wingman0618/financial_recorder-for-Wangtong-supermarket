@@ -19,7 +19,7 @@ public class Login{
 
     public void login(){
         main_UI mainPage = new main_UI();
-        mainPage.mainPage();
+        mainPage.visualise();
     }
 
     public Boolean checkAccount(String u, String p){

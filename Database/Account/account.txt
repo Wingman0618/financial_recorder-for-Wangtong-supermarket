@@ -1,2 +1,2 @@
-wingman,wingcat,
-,
+wingman,wingcat
+admin,123456

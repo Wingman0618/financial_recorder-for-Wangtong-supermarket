@@ -14,33 +14,17 @@ import java.text.SimpleDateFormat;
 import java.io.BufferedReader;
 import java.util.Date;
 import java.util.ArrayList;
-
-// import itex7.kernel.pdf.PdfDocument; 
-// import com.itextpdf.kernel.pdf.PdfWriter; 
-// import com.itextpdf.layout.Document; 
-// import com.itextpdf.layout.element.Paragraph; 
  
 public class Page implements Serializable{
 	
 	private String pagename;
-	private ArrayList<ArrayList<String>> page;
+	private ArrayList<ArrayList<String>> page = new ArrayList<ArrayList<String>>();
 	private double overall;
 	private int current;
 	private Console console = System.console();
-	protected PageOperation operation;
 
-	public void initializePage(){
-		this.page = new ArrayList<ArrayList<String>>();
-		// initializeLines();
-	}
-
-	// public void initializeLines(){	
-	// 	//for each line: id,date,abstract,income,expence	
-	// 	for(int i = 0; i <16; i++){
-	// 		ArrayList<String> line = new ArrayList<String>();
-	// 		page.add(line);
-	// 	}
-	// 	current = 0;
+	// public void initializePage(){
+	// 	this.page = new ArrayList<ArrayList<String>>();
 	// }
 
 	public void deleteLine(int id){
@@ -52,32 +36,6 @@ public class Page implements Serializable{
 			this.setLine(l, Integer.toString(id), null, null, null, null);
 		}
 	}
-		//modify line
-		// else{
-		// 	for(int i = 0; i <16; i++){
-		// 		if(page[i].getID() == id){
-		// 			String content = console.readLine("Please input the abstract of the line");
-		// 			int	income = Integer.parseInt(console.readLine("Please input the income: "));
-		// 			int	expense = Integer.parseInt(console.readLine("Please input the expense: "));
-		// 			String d = console.readLine("Please input the date like yyyy-mm-dd");
-		// 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		// 			Date date = null;
-		// 			try {
-		// 				date = simpleDateFormat.parse(d);
-		// 			} catch (ParseException e) {
-		// 				System.out.println("please input the correct pattern");
-		// 				e.printStackTrace();
-		// 			}	
-		// 			page[current].setAbstract(content);
-		// 			page[current].setDate(date);
-		// 			page[current].setExpense(expense);
-		// 			page[current].setID(id);
-		// 			page[current].setIncome(income);
-		// 			return;
-		// 		}
-		// 	}
-		// 	System.out.println("Line not found");
-		// }
 
 	public void addLine(String id, String ab, String in, String ex, String dt){
 			if(page.size() >= 16){
@@ -91,9 +49,9 @@ public class Page implements Serializable{
 		}
 	
 	
-	public Void savePage(){
+	public Void savePage(String pname){
 		try{
-			File f = new File("../Database/Pages/"+this.pagename+".csv");
+			File f = new File("../Database/Pages/"+pname+".csv");
 			f.createNewFile();
 			FileWriter fw = new FileWriter(f,true);
 			for(int i = 0; i < 16; i++){
@@ -143,22 +101,6 @@ public class Page implements Serializable{
 		return null;
 	}
 
-	
-	// public void printPage(){
-	// 	for(int i = 0; i < 16; i++){
-	// 		Line l = page[i];
-	// 		if(l.getAbstract().equals("-")){
-	// 			break;
-	// 		}
-	// 		String id = Integer.toString(l.getID());
-	// 		String income = Double.toString(l.getIncome());
-	// 		String expense = Double.toString(l.getExpense());
-	// 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	// 		Date d = l.getDate();
-	// 		String date = sdf.format(d);
-	// 		System.out.println(id + "|"+date + "|"+l.getAbstract() +"|"+ income +"|"+ expense + "\n");
-	// 	}
-	// }
 
 	public double calculate(){
 		return overall;
