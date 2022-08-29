@@ -38,9 +38,11 @@ public class Page_UI{
 
         JButton btn_delete = new JButton("delete");
         JButton btn_save = new JButton("save");
+        JButton btn_print = new JButton("print");
         JLabel overall = new JLabel("Overall: ");
         bottom.add(btn_delete);
         bottom.add(btn_save);
+        bottom.add(btn_print);
         bottom.add(overall);
 
         id.setBounds(50, 30, 60, 20);
@@ -91,13 +93,13 @@ public class Page_UI{
                 Pattern p = Pattern.compile("^[-\\+]?[\\d]*$");
                 if(id_TF.getText().equals("")||(p.matcher(id_TF.getText()).matches()==false)){
                     JOptionPane.showMessageDialog(null, "Please input Id number or input invalid");
-                }else if(date_TF.getText().equals("")||(p.matcher(date_TF.getText()).matches()==false)){
+                }else if(date_TF.getText().equals("")){
                     JOptionPane.showMessageDialog(null, "Please input date or input invalid");
                 }else if(message_TF.getText().equals("")){
                     JOptionPane.showMessageDialog(null, "Please input message or input invalid");
-                }else if(income_TF.getText().equals("")||(p.matcher(income_TF.getText()).matches()==false)){
+                }else if(income_TF.getText().equals("")){
                     JOptionPane.showMessageDialog(null, "Please input income or input invalid");
-                }else if(expend_TF.getText().equals("")||(p.matcher(expend_TF.getText()).matches()==false)){
+                }else if(expend_TF.getText().equals("")){
                     JOptionPane.showMessageDialog(null, "Please input expend or input invalid");
                 }else{
                     String data[] = {id_TF.getText(), date_TF.getText(), message_TF.getText(), income_TF.getText(), expend_TF.getText()};
@@ -138,6 +140,16 @@ public class Page_UI{
                     p.addLine((String)pageTable.getValueAt(i, 0),(String)pageTable.getValueAt(i, 1),(String)pageTable.getValueAt(i, 2),(String)pageTable.getValueAt(i, 3),(String)pageTable.getValueAt(i, 4));
                 }
                 p.savePage(filename);
+            }
+        });
+
+        btn_print.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                try{
+                    pageTable.print();
+                }catch(Exception ex){
+                    System.out.println("failed");
+                }
             }
         });
 
