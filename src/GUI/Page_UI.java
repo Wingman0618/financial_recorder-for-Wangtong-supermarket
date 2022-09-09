@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.regex.Pattern;
+import java.text.MessageFormat;
 
 import javax.swing.table.*;
 
@@ -111,10 +112,10 @@ public class Page_UI{
                         if(expend_TF.getText().equals("")){
                             expend_TF.setText("0");
                         }
-                        String data[] = {id_TF.getText(), date_TF.getText(), message_TF.getText(), income_TF.getText(), expend_TF.getText()};
+                        String data[] = {id_TF.getText(), date_TF.getText(), message_TF.getText(), income_TF.getText(), "-"+expend_TF.getText()};
                         pageTableM.addRow(data);
                         id_TF.setText(String.valueOf((Integer.valueOf(id_TF.getText())+1)));
-                        date_TF.setText(date_TF.getText());
+                        date_TF.setText("");
                         message_TF.setText("");
                         income_TF.setText("");
                         expend_TF.setText("");
@@ -171,8 +172,10 @@ public class Page_UI{
 
         btn_print.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
+                MessageFormat header = new MessageFormat("Financial account of Wantong supermarket");
+                MessageFormat footer = new MessageFormat("");
                 try{
-                    pageTable.print();
+                    pageTable.print(JTable.PrintMode.FIT_WIDTH, header, footer);
                 }catch(Exception ex){
                     System.out.println("failed");
                 }
