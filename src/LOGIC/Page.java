@@ -1,31 +1,17 @@
 package LOGIC;
 
-import java.io.Console;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.io.BufferedReader;
-import java.util.Date;
 import java.util.ArrayList;
  
 public class Page implements Serializable{
 	
-	private String pagename;
 	private ArrayList<ArrayList<String>> page = new ArrayList<ArrayList<String>>();
 	private double overall;
-	private int current;
-	private Console console = System.console();
 
-	// public void initializePage(){
-	// 	this.page = new ArrayList<ArrayList<String>>();
-	// }
 
 	public void deleteLine(int id){
 		ArrayList<String> l = this.getLine(id);
@@ -49,9 +35,9 @@ public class Page implements Serializable{
 		}
 	
 	
-	public Void savePage(String pname){
+	public Void savePage(String ppath){
 		try{
-			File f = new File("../Database/Pages/"+pname+".csv");
+			File f = new File(ppath);
 			f.createNewFile();
 			FileWriter fw = new FileWriter(f,true);
 			for(int i = 0; i < 16; i++){

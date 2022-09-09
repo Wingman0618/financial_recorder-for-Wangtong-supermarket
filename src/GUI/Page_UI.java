@@ -3,12 +3,17 @@ package GUI;
 import LOGIC.*;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.regex.Pattern;
 import java.text.MessageFormat;
 
 import javax.swing.table.*;
+
+import java.lang.Object;
 
 public class Page_UI{
 
@@ -148,11 +153,26 @@ public class Page_UI{
         btn_save.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 Page p = new Page();
-                String filename = JOptionPane.showInputDialog(null, "Input the file name: ");
+                String filename = JOptionPane.showInputDialog(null, "请输入文件名: ");
                 for(int i=0; i<pageTable.getRowCount(); i++){
                     p.addLine((String)pageTable.getValueAt(i, 0),(String)pageTable.getValueAt(i, 1),(String)pageTable.getValueAt(i, 2),(String)pageTable.getValueAt(i, 3),(String)pageTable.getValueAt(i, 4));
                 }
-                p.savePage(filename);
+                int result = 0;
+                String path = null;
+                JFileChooser fileChooser = new JFileChooser();
+                FileSystemView fsv = FileSystemView.getFileSystemView(); 
+                System.out.println(fsv.getHomeDirectory()); 
+                fileChooser.setCurrentDirectory(fsv.getHomeDirectory());
+                fileChooser.setDialogTitle("请选择保存路径...");
+                fileChooser.setApproveButtonText("确定");
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                result = fileChooser.showOpenDialog(null);
+                if (JFileChooser.APPROVE_OPTION == result) {
+                    path=fileChooser.getSelectedFile().getPath();
+                    String filePath = path + "/" + filename + ".csv";
+                    System.out.println(filePath);
+                    p.savePage(filePath);
+                }            
             }
         });
 
