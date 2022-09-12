@@ -3,7 +3,6 @@ package GUI;
 import LOGIC.*;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 
 import java.awt.*;
@@ -17,69 +16,98 @@ import java.lang.Object;
 
 public class Page_UI{
 
+    String session;
+
+    Double valueOfINCOME=0.00;
+    Double valueOfEXPEND=0.00;
+    Double valueOfTOTAL=0.00;
+    Double valueOftotalIncome=0.00;
+    Double valueOftotalExpend=0.00;
+    Double valueOftotal=0.00;
+
     public void visualise(){
+        session = JOptionPane.showInputDialog(null, "请输入年份: ");
         JFrame jf = new JFrame("Page");
-        jf.setSize(800, 600);
+        jf.setSize(800, 655);
         jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         JPanel line = new JPanel();
         JPanel page = new JPanel(new BorderLayout());
+        JPanel statistics_1 = new JPanel();
+        JPanel statistics_2 = new JPanel();
         JPanel bottom = new JPanel();
 
         line.setLayout(null);
         line.setPreferredSize(new Dimension(800, 100));
+        statistics_1.setPreferredSize(new Dimension(800, 25));
+        statistics_2.setPreferredSize(new Dimension(800, 25));
         bottom.setPreferredSize(new Dimension(800, 40));
 
-        JLabel id = new JLabel("ID number");
-        JLabel date = new JLabel("MM/DD");
-        JLabel message = new JLabel("Abstract");
-        JLabel income = new JLabel("Income");
-        JLabel expend = new JLabel("Expend");
+        JLabel id = new JLabel("货记编号");
+        JLabel date = new JLabel("月/日");
+        JLabel message = new JLabel("摘要");
+        JLabel income = new JLabel("收入");
+        JLabel expend = new JLabel("支出");
+
+        JLabel INCOME = new JLabel("总计收入: "+valueOfINCOME);
+        JLabel EXPEND = new JLabel("总计支出: "+String.valueOf(valueOfEXPEND));
+        JLabel TOTAL = new JLabel("总计："+String.valueOf(valueOfTOTAL));
+        JLabel totalIncome = new JLabel("累计收入: "+String.valueOf(valueOftotalIncome));
+        JLabel totalExpend = new JLabel("累计支出: "+String.valueOf(valueOftotalExpend));
+        JLabel total = new JLabel("累计总计: "+String.valueOf(valueOftotal));
 
         TextField id_TF = new TextField();
         TextField date_TF = new TextField();
         TextField message_TF = new TextField();
         TextField income_TF = new TextField();
         TextField expend_TF = new TextField();
-        JButton btn_add = new JButton("add");
+        JButton btn_add = new JButton("添加");
 
-        JButton btn_delete = new JButton("delete");
-        JButton btn_save = new JButton("save");
-        JButton btn_print = new JButton("print");
-        JButton btn_new = new JButton("new page");
-        JLabel overall = new JLabel("Overall: ");
+        JButton btn_delete = new JButton("删除");
+        JButton btn_save = new JButton("保存");
+        JButton btn_print = new JButton("打印");
+        JButton btn_nextPage = new JButton("下一页");
+        JButton btn_lastPage = new JButton("上一页");
+
+        statistics_1.add(INCOME);
+        statistics_1.add(EXPEND);
+        statistics_1.add(TOTAL);
+        statistics_2.add(totalIncome);
+        statistics_2.add(totalExpend);
+        statistics_2.add(total);
+
         bottom.add(btn_delete);
         bottom.add(btn_save);
-        bottom.add(btn_new);
+        bottom.add(btn_nextPage);
+        bottom.add(btn_lastPage);
         bottom.add(btn_print);
-        bottom.add(overall);
 
-        id.setBounds(50, 30, 60, 20);
-        date.setBounds(150, 30, 50, 20);
-        message.setBounds(325, 30, 50, 20);
-        income.setBounds(500, 30, 50, 20);
-        expend.setBounds(600, 30, 50, 20);
+        date.setBounds(60, 30, 60, 20);
+        id.setBounds(150, 30, 50, 20);
+        message.setBounds(335, 30, 50, 20);
+        income.setBounds(510, 30, 50, 20);
+        expend.setBounds(610, 30, 50, 20);
 
-        id_TF.setBounds(50, 55, 50, 20);
-        date_TF.setBounds(150, 55, 50, 20);
+        date_TF.setBounds(50, 55, 50, 20);
+        id_TF.setBounds(150, 55, 50, 20);
         message_TF.setBounds(250, 55, 200, 20);
         income_TF.setBounds(500, 55, 50, 20);
         expend_TF.setBounds(600, 55, 50, 20);
-        btn_add.setBounds(700, 55, 50, 20);
+        btn_add.setBounds(680, 55, 80, 20);
 
-        line.add(id);
         line.add(date);
+        line.add(id);
         line.add(message);
         line.add(income);
         line.add(expend);
-        line.add(id_TF);
         line.add(date_TF);
+        line.add(id_TF);
         line.add(message_TF);
         line.add(income_TF);
         line.add(expend_TF);
         line.add(btn_add);
         
-        String[] columnNames = {"ID number", "Date", "Abstract", "Income", "Expend"};
-        Object[][] rowData = {{null,null,null,null,null}};
+        String[] columnNames = {"日期", "货记编号", "摘要", "收入", "支出", "结存"};
+        Object[][] rowData = {{null,null,null,null,null,null}};
         DefaultTableModel pageTableM = new DefaultTableModel(rowData, columnNames);
         pageTableM.removeRow(0);
         JTable pageTable = new JTable(pageTableM);
@@ -94,6 +122,9 @@ public class Page_UI{
         pageTable.getTableHeader().setResizingAllowed(false);
         pageTable.getTableHeader().setReorderingAllowed(false);
         pageTable.setEnabled(false);
+
+        //pageTable.setPreferredSize(new Dimension(800, 475));
+        //JScrollPane scrollPane = new JScrollPane(pageTable);
 
         page.add(pageTable.getTableHeader(), BorderLayout.NORTH);
         page.add(pageTable, BorderLayout.CENTER);
@@ -117,8 +148,22 @@ public class Page_UI{
                         if(expend_TF.getText().equals("")){
                             expend_TF.setText("0");
                         }
-                        String data[] = {id_TF.getText(), date_TF.getText(), message_TF.getText(), income_TF.getText(), "-"+expend_TF.getText()};
+                        String data[] = {date_TF.getText(), id_TF.getText(), message_TF.getText(), income_TF.getText(), "-"+expend_TF.getText(), ""};
                         pageTableM.addRow(data);
+                        valueOfINCOME = valueOfINCOME + Double.valueOf(income_TF.getText());
+                        valueOfEXPEND = valueOfEXPEND + Double.valueOf(expend_TF.getText());
+                        valueOfTOTAL = valueOfINCOME - valueOfEXPEND;
+                        valueOftotalIncome = valueOftotalIncome + Double.valueOf(income_TF.getText());
+                        valueOftotalExpend = valueOftotalExpend + Double.valueOf(expend_TF.getText());
+                        valueOftotal = valueOftotalIncome - valueOftotalExpend;
+
+                        INCOME.setText("总计收入: "+ String.valueOf(valueOfINCOME));
+                        EXPEND.setText("总计支出: "+ String.valueOf(valueOfEXPEND));
+                        TOTAL.setText("总计: "+ String.valueOf(valueOfTOTAL));
+                        totalIncome.setText("累计收入: "+ String.valueOf(valueOftotalIncome));
+                        totalExpend.setText("累计支出: "+ String.valueOf(valueOftotalExpend));
+                        total.setText("累计总计: "+ String.valueOf(valueOftotal));
+
                         id_TF.setText(String.valueOf((Integer.valueOf(id_TF.getText())+1)));
                         date_TF.setText("");
                         message_TF.setText("");
@@ -163,7 +208,7 @@ public class Page_UI{
                 FileSystemView fsv = FileSystemView.getFileSystemView(); 
                 System.out.println(fsv.getHomeDirectory()); 
                 fileChooser.setCurrentDirectory(fsv.getHomeDirectory());
-                fileChooser.setDialogTitle("请选择保存路径...");
+                fileChooser.setDialogTitle("please choose path...");
                 fileChooser.setApproveButtonText("确定");
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 result = fileChooser.showOpenDialog(null);
@@ -176,8 +221,9 @@ public class Page_UI{
             }
         });
 
-        btn_new.addActionListener(new ActionListener(){
+        btn_nextPage.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
+                //别动
                 id_TF.setText("");
                 date_TF.setText("");
                 message_TF.setText("");
@@ -190,10 +236,25 @@ public class Page_UI{
             }
         });
 
+        btn_lastPage.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                
+            }
+        });
+
         btn_print.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                MessageFormat header = new MessageFormat("Financial account of Wantong supermarket");
+                MessageFormat header = new MessageFormat("万通超市财务流水账簿"+"  "+session);
                 MessageFormat footer = new MessageFormat("");
+                int rowNumber = pageTable.getRowCount();
+                for(int i=0; i<15-rowNumber; i++){
+                    String data[] = {"", "", "", "", "",""};
+                    pageTableM.addRow(data); 
+                }
+                String pageOverall[]={"本页共计","/","/",String.valueOf(INCOME),String.valueOf(EXPEND),String.valueOf(TOTAL)};
+                String total[]={"累计","/","/",String.valueOf(valueOftotalIncome),String.valueOf(valueOftotalExpend),String.valueOf(valueOftotal)};
+                pageTableM.addRow(pageOverall);
+                pageTableM.addRow(total);
                 try{
                     pageTable.print(JTable.PrintMode.FIT_WIDTH, header, footer);
                 }catch(Exception ex){
@@ -202,9 +263,14 @@ public class Page_UI{
             }
         });
 
+        Box vbox = Box.createVerticalBox();
+        vbox.add(statistics_1);
+        vbox.add(statistics_2);
+        vbox.add(bottom);
+
         jf.add(line, BorderLayout.NORTH);
         jf.add(page, BorderLayout.CENTER);
-        jf.add(bottom, BorderLayout.SOUTH);
+        jf.add(vbox, BorderLayout.SOUTH);
         jf.setLocationRelativeTo(null);
         jf.setVisible(true);
     }
