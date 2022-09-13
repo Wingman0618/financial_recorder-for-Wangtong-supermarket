@@ -46,14 +46,12 @@ public class Page_UI{
         JPanel page = new JPanel(new BorderLayout());
         JPanel statistics_1 = new JPanel();
         JPanel statistics_2 = new JPanel();
-        JPanel statistics_3 = new JPanel();
         JPanel bottom = new JPanel();
 
         line.setLayout(null);
         line.setPreferredSize(new Dimension(800, 100));
         statistics_1.setPreferredSize(new Dimension(800, 25));
         statistics_2.setPreferredSize(new Dimension(800, 25));
-        statistics_3.setPreferredSize(new Dimension(800, 25));
         bottom.setPreferredSize(new Dimension(800, 40));
 
         JLabel id = new JLabel("货记编号");
@@ -68,7 +66,6 @@ public class Page_UI{
         JLabel totalIncome = new JLabel("累计收入: "+String.valueOf(valueOftotalIncome));
         JLabel totalExpend = new JLabel("累计支出: "+String.valueOf(valueOftotalExpend));
         JLabel total = new JLabel("累计总计: "+String.valueOf(valueOftotal));
-        JLabel pagination = new JLabel("第"+ Integer.toString(index) + "页");
 
         TextField id_TF = new TextField();
         TextField date_TF = new TextField();
@@ -84,14 +81,12 @@ public class Page_UI{
         JButton btn_lastPage = new JButton("上一页");
         JButton btn_save1 = new JButton("保存本页");
         
-
         statistics_1.add(INCOME);
         statistics_1.add(EXPEND);
         statistics_1.add(TOTAL);
         statistics_2.add(totalIncome);
         statistics_2.add(totalExpend);
         statistics_2.add(total);
-        statistics_3.add(pagination);
 
         bottom.add(btn_delete);
         bottom.add(btn_save1);
@@ -317,7 +312,6 @@ public class Page_UI{
                     income_TF.setText("");
                     expend_TF.setText("");
                 }
-                pagination.setText("第" + Integer.toString(index) + "页");
             }
         });
 
@@ -373,8 +367,7 @@ public class Page_UI{
                 date_TF.setText("");
                 message_TF.setText("");
                 income_TF.setText("");
-                expend_TF.setText("");      
-                pagination.setText("第" + Integer.toString(index) + "页");   
+                expend_TF.setText("");       
             }
         });
 
@@ -383,11 +376,11 @@ public class Page_UI{
                 MessageFormat header = new MessageFormat("万通超市财务流水账簿"+"  "+session);
                 MessageFormat footer = new MessageFormat("");
                 int rowNumber = pageTable.getRowCount();
-                for(int i=0; i<15-rowNumber; i++){
+                for(int i=0; i<14-rowNumber; i++){
                     String data[] = {"", "", "", "", "",""};
                     pageTableM.addRow(data); 
                 }
-                String pageOverall[]={"本页共计","/","/",String.valueOf(INCOME),String.valueOf(EXPEND),String.valueOf(TOTAL)};
+                String pageOverall[]={"本页共计","/","/",String.valueOf(valueOfINCOME),String.valueOf(valueOfEXPEND),String.valueOf(valueOfTOTAL)};
                 String total[]={"累计","/","/",String.valueOf(valueOftotalIncome),String.valueOf(valueOftotalExpend),String.valueOf(valueOftotal)};
                 pageTableM.addRow(pageOverall);
                 pageTableM.addRow(total);
@@ -402,7 +395,7 @@ public class Page_UI{
         Box vbox = Box.createVerticalBox();
         vbox.add(statistics_1);
         vbox.add(statistics_2);
-        vbox.add(statistics_3);
+        //vbox.add(statistics_3);
         vbox.add(bottom);
 
         jf.add(line, BorderLayout.NORTH);
