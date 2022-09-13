@@ -23,15 +23,10 @@ public class Page implements Serializable{
 		}
 	}
 
-	public void addLine(String id, String ab, String in, String ex, String dt){
-			if(page.size() >= 16){
-				System.out.println("Page is full, please save this page and create a new page.");
-				return;
-			}
+	public void addLine(String dt, String id, String ab, String in, String ex){
 			ArrayList<String> l = new ArrayList<String>();
-			this.setLine(l, id, ab, in, ex, dt);
+			this.setLine(l, dt, id, ab, in, ex);
 			page.add(l);
-			overall = overall + Double.parseDouble(in) - Double.parseDouble(ex);
 		}
 	
 	
@@ -48,12 +43,12 @@ public class Page implements Serializable{
 				catch(IndexOutOfBoundsException e){
 					break;
 				}
-				String id = l.get(0);
-				String date = l.get(1);
+				String date = l.get(0);
+				String id = l.get(1);
 				String ab = l.get(2);
 				String income = l.get(3);
 				String expense = l.get(4);
-				fw.write(id + ","+ date + ","+ ab +","+ income +","+ expense + "\n");
+				fw.write(date + ","+ id + ","+ ab +","+ income +","+ expense + "\n");
 				fw.flush();
 			}
 			fw.close();
@@ -72,7 +67,6 @@ public class Page implements Serializable{
             String line = bf.readLine();
             while(line != null){
 				String[] contents = line.split(",");
-                int count = 0;
 				ArrayList<String> l = new ArrayList<String>();
 				this.setLine(l, contents[0], contents[1], contents[2], contents[3], contents[4]);
 				page.add(l);
@@ -101,17 +95,17 @@ public class Page implements Serializable{
 		catch(IndexOutOfBoundsException e){
 			return null;
 		}
-		line[1] = l.get(0);
-		line[0] = l.get(1);
+		line[0] = l.get(0);
+		line[1] = l.get(1);
 		line[2] = l.get(2);
 		line[3] = l.get(3);
 		line[4] = l.get(4);
 		return line;
 	}
 
-	public void setLine(ArrayList<String> l, String id, String ab, String dt,String in, String ex){
-		l.add(id);
+	public void setLine(ArrayList<String> l, String dt, String id, String ab,String in, String ex){
 		l.add(dt);
+		l.add(id);
 		l.add(ab);
 		l.add(in);
 		l.add(ex);
