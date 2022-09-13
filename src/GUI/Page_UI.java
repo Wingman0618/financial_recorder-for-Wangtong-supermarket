@@ -190,7 +190,7 @@ public class Page_UI{
 
         btn_delete.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                String input = JOptionPane.showInputDialog(null, "请输入删除条目货记编号");
+                String input = JOptionPane.showInputDialog(null, "请输入欲删除条目所在行数");
                 Pattern p = Pattern.compile("^[-\\+]?[\\d]*$");
                 if(!p.matcher(input).matches()||input.equals("")){
                     JOptionPane.showMessageDialog(null, "输入非法");
@@ -201,6 +201,7 @@ public class Page_UI{
                         for(int n=1; n<5;n++){
                             pageTableM.setValueAt("", row-1, n);
                         }
+                        pageTableM.setValueAt("已删除", row-1, 2);
                     }else{
                         JOptionPane.showMessageDialog(null, "找不到对象QAQ");
                     }
@@ -213,14 +214,26 @@ public class Page_UI{
             public void actionPerformed(ActionEvent e){
                 Page p = new Page();
                 String filename = JOptionPane.showInputDialog(null, "请输入文件名: ");
-                for(int i=0; i<pageTable.getRowCount(); i++){
-                    p.addLine((String)pageTable.getValueAt(i, 0),(String)pageTable.getValueAt(i, 1),(String)pageTable.getValueAt(i, 2),(String)pageTable.getValueAt(i, 3),(String)pageTable.getValueAt(i, 4));
+                for(int i=0; i<15; i++){
+                    try{
+                        String l[] = {(String)pageTable.getValueAt(i, 0),//date
+                            (String)pageTable.getValueAt(i, 1),//id
+                            (String)pageTable.getValueAt(i, 2),//abstract
+                            (String)pageTable.getValueAt(i, 3),//income
+                            (String)pageTable.getValueAt(i, 4),//expence
+                            "结了个存"//overall
+                        };
+                        p.addLine(l);
+                    }
+                    catch(Exception exception){
+                        String l[] = {" ", " ", " ", " ", " ", " "};
+                        p.addLine(l);
+                    }
                 }
                 int result = 0;
                 String path = null;
                 JFileChooser fileChooser = new JFileChooser();
                 FileSystemView fsv = FileSystemView.getFileSystemView(); 
-                System.out.println(fsv.getHomeDirectory()); 
                 fileChooser.setCurrentDirectory(fsv.getHomeDirectory());
                 fileChooser.setDialogTitle("请选择文件路径");
                 fileChooser.setApproveButtonText("确定");
@@ -229,7 +242,6 @@ public class Page_UI{
                 if (JFileChooser.APPROVE_OPTION == result) {
                     path=fileChooser.getSelectedFile().getPath();
                     String filePath = path + "/" + filename + ".csv";
-                    System.out.println(filePath);
                     p.savePage(filePath);
                 }            
             }
@@ -238,8 +250,21 @@ public class Page_UI{
         btn_save1.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 Page p = new Page();
-                for(int i=0; i<pageTable.getRowCount(); i++){
-                    p.addLine((String)pageTable.getValueAt(i, 0),(String)pageTable.getValueAt(i, 1),(String)pageTable.getValueAt(i, 2),(String)pageTable.getValueAt(i, 3),(String)pageTable.getValueAt(i, 4));
+                for(int i=0; i<15; i++){
+                    try{
+                        String l[] = {(String)pageTable.getValueAt(i, 0),//date
+                            (String)pageTable.getValueAt(i, 1),//id
+                            (String)pageTable.getValueAt(i, 2),//abstract
+                            (String)pageTable.getValueAt(i, 3),//income
+                            (String)pageTable.getValueAt(i, 4),//expence
+                            "结了个存"//overall
+                        };
+                        p.addLine(l);
+                    }
+                    catch(Exception exception){
+                        String l[] = {" ", " ", " ", " ", " ", " "};
+                        p.addLine(l);
+                    }
                 }
                 String path = dir + Integer.toString(index) + ".csv";
                 p.savePage(path);
@@ -250,8 +275,21 @@ public class Page_UI{
             public void actionPerformed(ActionEvent e){
                 //save current page
                 Page p = new Page();
-                for(int i=0; i<pageTable.getRowCount(); i++){
-                    p.addLine((String)pageTable.getValueAt(i, 0),(String)pageTable.getValueAt(i, 1),(String)pageTable.getValueAt(i, 2),(String)pageTable.getValueAt(i, 3),(String)pageTable.getValueAt(i, 4));
+                for(int i=0; i<15; i++){
+                    try{
+                        String l[] = {(String)pageTable.getValueAt(i, 0),//date
+                            (String)pageTable.getValueAt(i, 1),//id
+                            (String)pageTable.getValueAt(i, 2),//abstract
+                            (String)pageTable.getValueAt(i, 3),//income
+                            (String)pageTable.getValueAt(i, 4),//expence
+                            "结了个存"//overall
+                        };
+                        p.addLine(l);
+                    }
+                    catch(Exception exception){
+                        String l[] = {" ", " ", " ", " ", " ", " "};
+                        p.addLine(l);
+                    }
                 }
                 p.savePage(dir + Integer.toString(index) + ".csv");
                 //clear the table
@@ -272,7 +310,7 @@ public class Page_UI{
                     int id = 0;
                     for(int i = 0; i < 15; i++){
                         String data[] = pp.getLine(i);
-                        if (data == null){
+                        if (data[0].equals(" ")){
                             break;
                         }
                         else{
@@ -323,8 +361,21 @@ public class Page_UI{
                 }
                 //save current page
                 Page p = new Page();
-                for(int i=0; i<pageTable.getRowCount(); i++){
-                    p.addLine((String)pageTable.getValueAt(i, 0),(String)pageTable.getValueAt(i, 1),(String)pageTable.getValueAt(i, 2),(String)pageTable.getValueAt(i, 3),(String)pageTable.getValueAt(i, 4));
+                for(int i=0; i<15; i++){
+                    try{
+                        String l[] = {(String)pageTable.getValueAt(i, 0),//date
+                            (String)pageTable.getValueAt(i, 1),//id
+                            (String)pageTable.getValueAt(i, 2),//abstract
+                            (String)pageTable.getValueAt(i, 3),//income
+                            (String)pageTable.getValueAt(i, 4),//expence
+                            "结了个存"//overall
+                        };
+                        p.addLine(l);
+                    }
+                    catch(Exception exception){
+                        String l[] = {" ", " ", "  ", " ", " ", " "};
+                        p.addLine(l);
+                    }
                 }
                 p.savePage(dir + Integer.toString(index) + ".csv");
                 //clear the table
@@ -342,7 +393,7 @@ public class Page_UI{
                 int id = 0;
                 for(int i = 0; i < 15; i++){
                     String data[] = pp.getLine(i);
-                    if (data == null){
+                    if (data[0].equals(" ")){
                         break;
                     }
                     else{
@@ -350,8 +401,6 @@ public class Page_UI{
                         valueOfINCOME = valueOfINCOME + Double.valueOf(data[3]);
                         valueOfEXPEND = valueOfEXPEND + Double.valueOf(data[4]);
                         valueOfTOTAL = valueOfINCOME + valueOfEXPEND;
-                        System.out.println(valueOfINCOME);
-                        System.out.println(valueOfEXPEND);
                         id = Integer.valueOf(data[1]);
                     }
                 }

@@ -23,10 +23,11 @@ public class Page implements Serializable{
 		}
 	}
 
-	public void addLine(String dt, String id, String ab, String in, String ex){
-			ArrayList<String> l = new ArrayList<String>();
-			this.setLine(l, dt, id, ab, in, ex);
-			page.add(l);
+	public void addLine(String[] line){
+		//line:[date, id, abstract, income, expence, overall]
+		ArrayList<String> l = new ArrayList<String>();
+		this.setLine(l, line);
+		page.add(l);
 		}
 	
 	
@@ -48,7 +49,8 @@ public class Page implements Serializable{
 				String ab = l.get(2);
 				String income = l.get(3);
 				String expense = l.get(4);
-				fw.write(date + ","+ id + ","+ ab +","+ income +","+ expense + "\n");
+				String overall = l.get(5);
+				fw.write(date + ","+ id + ","+ ab +","+ income +","+ expense + "," + overall + "\n");
 				fw.flush();
 			}
 			fw.close();
@@ -68,7 +70,7 @@ public class Page implements Serializable{
             while(line != null){
 				String[] contents = line.split(",");
 				ArrayList<String> l = new ArrayList<String>();
-				this.setLine(l, contents[0], contents[1], contents[2], contents[3], contents[4]);
+				this.setLine(l, contents);
 				page.add(l);
                 line = bf.readLine();
             }
@@ -87,28 +89,32 @@ public class Page implements Serializable{
 	}
 
 	public String[] getLine(int ln){
-		String[] line = new String[5];
+		String[] line = new String[6];
 		ArrayList<String> l;
 		try{
 			l = page.get(ln);
 		}
 		catch(IndexOutOfBoundsException e){
-			return null;
+			return null;			
 		}
+		//line:[date, id, abstract, income, expence, overall]
 		line[0] = l.get(0);
 		line[1] = l.get(1);
 		line[2] = l.get(2);
 		line[3] = l.get(3);
 		line[4] = l.get(4);
+		line[5] = l.get(5);
 		return line;
 	}
 
-	public void setLine(ArrayList<String> l, String dt, String id, String ab,String in, String ex){
-		l.add(dt);
-		l.add(id);
-		l.add(ab);
-		l.add(in);
-		l.add(ex);
+	public void setLine(ArrayList<String> l, String[] line){
+		//line:[date, id, abstract, income, expence, overall]
+		l.add(line[0]);
+		l.add(line[1]);
+		l.add(line[2]);
+		l.add(line[3]);
+		l.add(line[4]);
+		l.add(line[5]);
 	}
 
 	
