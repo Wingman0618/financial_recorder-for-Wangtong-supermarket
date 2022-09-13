@@ -11,7 +11,7 @@ public class main_UI{
 
 
     public void visualise(){
-        JFrame jf = new JFrame("WELCOME");
+        JFrame jf = new JFrame("万通超市财务流水账簿系统");
         jf.setSize(400, 300);
         jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jf.setLayout(null);

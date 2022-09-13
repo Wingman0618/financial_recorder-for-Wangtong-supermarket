@@ -7,6 +7,7 @@ import javax.swing.filechooser.FileSystemView;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.regex.Pattern;
 import java.text.MessageFormat;
 
@@ -24,22 +25,35 @@ public class Page_UI{
     Double valueOftotalIncome=0.00;
     Double valueOftotalExpend=0.00;
     Double valueOftotal=0.00;
+    int index = 1;
 
     public void visualise(){
         session = JOptionPane.showInputDialog(null, "请输入年份: ");
-        JFrame jf = new JFrame("Page");
+        String dir = "../Database/Pages/" + session + "/";
+        File Dir = new File("../Database/Pages/" + session);
+        Dir.mkdir();
+        File check = new File(dir + Integer.toString(index) + ".csv");
+        Boolean exist = check.exists();
+        while(exist){
+            index++;
+            check = new File(dir + Integer.toString(index) + ".csv");
+            exist = check.exists();
+        }
+        JFrame jf = new JFrame("账目表");
         jf.setSize(800, 655);
         jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         JPanel line = new JPanel();
         JPanel page = new JPanel(new BorderLayout());
         JPanel statistics_1 = new JPanel();
         JPanel statistics_2 = new JPanel();
+        JPanel statistics_3 = new JPanel();
         JPanel bottom = new JPanel();
 
         line.setLayout(null);
         line.setPreferredSize(new Dimension(800, 100));
         statistics_1.setPreferredSize(new Dimension(800, 25));
         statistics_2.setPreferredSize(new Dimension(800, 25));
+        statistics_3.setPreferredSize(new Dimension(800, 25));
         bottom.setPreferredSize(new Dimension(800, 40));
 
         JLabel id = new JLabel("货记编号");
@@ -54,6 +68,7 @@ public class Page_UI{
         JLabel totalIncome = new JLabel("累计收入: "+String.valueOf(valueOftotalIncome));
         JLabel totalExpend = new JLabel("累计支出: "+String.valueOf(valueOftotalExpend));
         JLabel total = new JLabel("累计总计: "+String.valueOf(valueOftotal));
+        JLabel pagination = new JLabel("第"+ Integer.toString(index) + "页");
 
         TextField id_TF = new TextField();
         TextField date_TF = new TextField();
@@ -63,10 +78,12 @@ public class Page_UI{
         JButton btn_add = new JButton("添加");
 
         JButton btn_delete = new JButton("删除");
-        JButton btn_save = new JButton("保存");
+        JButton btn_save = new JButton("另存本页至...");
         JButton btn_print = new JButton("打印");
         JButton btn_nextPage = new JButton("下一页");
         JButton btn_lastPage = new JButton("上一页");
+        JButton btn_save1 = new JButton("保存本页");
+        
 
         statistics_1.add(INCOME);
         statistics_1.add(EXPEND);
@@ -74,12 +91,14 @@ public class Page_UI{
         statistics_2.add(totalIncome);
         statistics_2.add(totalExpend);
         statistics_2.add(total);
+        statistics_3.add(pagination);
 
         bottom.add(btn_delete);
-        bottom.add(btn_save);
-        bottom.add(btn_nextPage);
+        bottom.add(btn_save1);
         bottom.add(btn_lastPage);
+        bottom.add(btn_nextPage);
         bottom.add(btn_print);
+        bottom.add(btn_save);
 
         date.setBounds(60, 30, 60, 20);
         id.setBounds(150, 30, 50, 20);
@@ -133,14 +152,14 @@ public class Page_UI{
             public void actionPerformed(ActionEvent e){
                 Pattern p = Pattern.compile("^[-\\+]?[\\d]*$");
                 if(pageTable.getRowCount()>15){
-                    JOptionPane.showMessageDialog(null, "page is full, please add new page");
+                    JOptionPane.showMessageDialog(null, "本页已满，请添加新页");
                 }else{
                     if(id_TF.getText().equals("")||(p.matcher(id_TF.getText()).matches()==false)){
-                        JOptionPane.showMessageDialog(null, "Please input Id number or input invalid");
+                        JOptionPane.showMessageDialog(null, "请输入货计编号");
                     }else if(date_TF.getText().equals("")){
-                        JOptionPane.showMessageDialog(null, "Please input date or input invalid");
+                        JOptionPane.showMessageDialog(null, "请以mm/dd格式输入日期");
                     }else if(message_TF.getText().equals("")){
-                        JOptionPane.showMessageDialog(null, "Please input message or input invalid");
+                        JOptionPane.showMessageDialog(null, "请输入摘要内容");
                     }else{
                         if(income_TF.getText().equals("")){
                             income_TF.setText("0");
@@ -176,10 +195,10 @@ public class Page_UI{
 
         btn_delete.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                String input = JOptionPane.showInputDialog(null, "Input the ID number: ");
+                String input = JOptionPane.showInputDialog(null, "请输入删除条目货记编号");
                 Pattern p = Pattern.compile("^[-\\+]?[\\d]*$");
                 if(!p.matcher(input).matches()||input.equals("")){
-                    JOptionPane.showMessageDialog(null, "Input invalid");
+                    JOptionPane.showMessageDialog(null, "输入非法");
                 }else{
                     int row = Integer.valueOf(input);
                     pageTable.setEnabled(true);
@@ -188,7 +207,7 @@ public class Page_UI{
                             pageTableM.setValueAt("", row-1, n);
                         }
                     }else{
-                        JOptionPane.showMessageDialog(null, "ID is not found!");
+                        JOptionPane.showMessageDialog(null, "找不到对象QAQ");
                     }
                     pageTable.setEnabled(false);
                 }
@@ -208,7 +227,7 @@ public class Page_UI{
                 FileSystemView fsv = FileSystemView.getFileSystemView(); 
                 System.out.println(fsv.getHomeDirectory()); 
                 fileChooser.setCurrentDirectory(fsv.getHomeDirectory());
-                fileChooser.setDialogTitle("please choose path...");
+                fileChooser.setDialogTitle("请选择文件路径");
                 fileChooser.setApproveButtonText("确定");
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 result = fileChooser.showOpenDialog(null);
@@ -221,24 +240,141 @@ public class Page_UI{
             }
         });
 
+        btn_save1.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                Page p = new Page();
+                for(int i=0; i<pageTable.getRowCount(); i++){
+                    p.addLine((String)pageTable.getValueAt(i, 0),(String)pageTable.getValueAt(i, 1),(String)pageTable.getValueAt(i, 2),(String)pageTable.getValueAt(i, 3),(String)pageTable.getValueAt(i, 4));
+                }
+                String path = dir + Integer.toString(index) + ".csv";
+                p.savePage(path);
+            }
+        });
+
         btn_nextPage.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                //别动
-                id_TF.setText("");
-                date_TF.setText("");
-                message_TF.setText("");
-                income_TF.setText("");
-                expend_TF.setText("");
+                //save current page
+                Page p = new Page();
+                for(int i=0; i<pageTable.getRowCount(); i++){
+                    p.addLine((String)pageTable.getValueAt(i, 0),(String)pageTable.getValueAt(i, 1),(String)pageTable.getValueAt(i, 2),(String)pageTable.getValueAt(i, 3),(String)pageTable.getValueAt(i, 4));
+                }
+                p.savePage(dir + Integer.toString(index) + ".csv");
+                //clear the table
                 int rowCount = pageTableM.getRowCount();
                 for(int i=0; i<rowCount; i++){
                     pageTableM.removeRow(0);
                 }
+                valueOfINCOME = 0.0;
+                valueOfEXPEND = 0.0;
+                valueOfTOTAL = 0.0;
+                //load next page
+                index++;
+                File f = new File(dir + Integer.toString(index) + ".csv");
+                //if next page exists: load next page
+                if(f.exists()){
+                    Page pp = new Page();
+                    pp.loadPage(dir + Integer.toString(index) + ".csv");
+                    int id = 0;
+                    for(int i = 0; i < 15; i++){
+                        String data[] = pp.getLine(i);
+                        if (data == null){
+                            break;
+                        }
+                        else{
+                            pageTableM.addRow(data);
+                            valueOfINCOME = valueOfINCOME + Double.valueOf(data[3]);
+                            valueOfEXPEND = valueOfEXPEND + Double.valueOf(data[4]);
+                            valueOfTOTAL = valueOfINCOME + valueOfEXPEND;
+    
+                            id = Integer.valueOf(data[1]);
+                        }
+                    }
+                    INCOME.setText("总计收入: "+ Double.toString(valueOfINCOME));
+                    EXPEND.setText("总计支出: "+ Double.toString(valueOfEXPEND));
+                    TOTAL.setText("总计: "+ Double.toString(valueOfTOTAL));
+                    totalIncome.setText("累计收入: "+ Double.toString(valueOftotalIncome));
+                    totalExpend.setText("累计支出: "+ Double.toString(valueOftotalExpend));
+                    total.setText("累计总计: "+ Double.toString(valueOftotal));
+    
+                    id_TF.setText(Integer.toString(id + 1));
+                    date_TF.setText("");
+                    message_TF.setText("");
+                    income_TF.setText("");
+                    expend_TF.setText("");                
+                    }
+                //not exist: create new page
+                else{
+                    INCOME.setText("总计收入: "+ String.valueOf(valueOfINCOME));
+                    EXPEND.setText("总计支出: "+ String.valueOf(valueOfEXPEND));
+                    TOTAL.setText("总计: "+ String.valueOf(valueOfTOTAL));
+                    totalIncome.setText("累计收入: "+ String.valueOf(valueOftotalIncome));
+                    totalExpend.setText("累计支出: "+ String.valueOf(valueOftotalExpend));
+                    total.setText("累计总计: "+ String.valueOf(valueOftotal));
+
+                    id_TF.setText("");
+                    date_TF.setText("");
+                    message_TF.setText("");
+                    income_TF.setText("");
+                    expend_TF.setText("");
+                }
+                pagination.setText("第" + Integer.toString(index) + "页");
             }
         });
 
         btn_lastPage.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                
+                if(index == 1){
+                    JOptionPane.showMessageDialog(null, "已经是第一页");
+                    return;
+                }
+                //save current page
+                Page p = new Page();
+                for(int i=0; i<pageTable.getRowCount(); i++){
+                    p.addLine((String)pageTable.getValueAt(i, 0),(String)pageTable.getValueAt(i, 1),(String)pageTable.getValueAt(i, 2),(String)pageTable.getValueAt(i, 3),(String)pageTable.getValueAt(i, 4));
+                }
+                p.savePage(dir + Integer.toString(index) + ".csv");
+                //clear the table
+                int rowCount = pageTableM.getRowCount();
+                for(int i=0; i<rowCount; i++){
+                    pageTableM.removeRow(0);
+                }
+                valueOfINCOME = 0.0;
+                valueOfEXPEND = 0.0;
+                valueOfTOTAL = 0.0;
+                //load previous page
+                index --;       
+                Page pp = new Page();
+                pp.loadPage(dir + Integer.toString(index) + ".csv");
+                int id = 0;
+                for(int i = 0; i < 15; i++){
+                    String data[] = pp.getLine(i);
+                    if (data == null){
+                        break;
+                    }
+                    else{
+                        pageTableM.addRow(data);
+                        valueOfINCOME = valueOfINCOME + Double.valueOf(data[3]);
+                        valueOfEXPEND = valueOfEXPEND + Double.valueOf(data[4]);
+                        valueOfTOTAL = valueOfINCOME + valueOfEXPEND;
+                        System.out.println(valueOfINCOME);
+                        System.out.println(valueOfEXPEND);
+                        id = Integer.valueOf(data[1]);
+                    }
+                }
+
+                INCOME.setText("总计收入: "+ String.valueOf(valueOfINCOME));
+                EXPEND.setText("总计支出: "+ String.valueOf(valueOfEXPEND));
+                TOTAL.setText("总计: "+ String.valueOf(valueOfTOTAL));
+                totalIncome.setText("累计收入: "+ String.valueOf(valueOftotalIncome));
+                totalExpend.setText("累计支出: "+ String.valueOf(valueOftotalExpend));
+                total.setText("累计总计: "+ String.valueOf(valueOftotal));
+
+                id_TF.setText(Integer.toString(id + 1));
+                date_TF.setText("");
+                message_TF.setText("");
+                income_TF.setText("");
+                expend_TF.setText("");      
+                pagination.setText("第" + Integer.toString(index) + "页");   
             }
         });
 
@@ -266,6 +402,7 @@ public class Page_UI{
         Box vbox = Box.createVerticalBox();
         vbox.add(statistics_1);
         vbox.add(statistics_2);
+        vbox.add(statistics_3);
         vbox.add(bottom);
 
         jf.add(line, BorderLayout.NORTH);
@@ -274,5 +411,6 @@ public class Page_UI{
         jf.setLocationRelativeTo(null);
         jf.setVisible(true);
     }
+
 
 }

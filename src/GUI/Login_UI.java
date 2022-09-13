@@ -17,18 +17,18 @@ public class Login_UI{
     private JButton regist;
 
     public void visualise(){
-        JFrame jf = new JFrame("login");
+        JFrame jf = new JFrame("万通超市财务流水账簿系统");
         jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         JPanel p_username = new JPanel();
         JPanel p_password = new JPanel();
         JPanel p_buttons = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-        user_label=new JLabel("username");
-        password_label = new JLabel("password");
+        user_label=new JLabel("用户名");
+        password_label = new JLabel("密   码");
         userName = new JTextField(10);
         passWord = new JPasswordField(10);
-        login = new JButton("login");
-        regist = new JButton("regist");
+        login = new JButton("登录");
+        regist = new JButton("注册");
 
         login.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
@@ -36,7 +36,7 @@ public class Login_UI{
                 login.setUsername(userName.getText()) ;
                 login.setPassword(passWord.getText());
                 if(login.checkAccount(login.getUsername(),login.getPassword())){
-                    System.out.println("success");
+                    System.out.println("nb");
                     login.login();
                     jf.dispose();
                 }else{

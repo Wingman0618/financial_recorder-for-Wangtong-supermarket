@@ -14,12 +14,12 @@ public class Page implements Serializable{
 
 
 	public void deleteLine(int id){
-		ArrayList<String> l = this.getLine(id);
+		String[] l = this.getLine(id);
 		if (l == null){
 			System.out.println("id not found");
 		}
 		else{
-			this.setLine(l, Integer.toString(id), null, null, null, null);
+			return;
 		}
 	}
 
@@ -39,7 +39,7 @@ public class Page implements Serializable{
 		try{
 			File f = new File(ppath);
 			f.createNewFile();
-			FileWriter fw = new FileWriter(f,true);
+			FileWriter fw = new FileWriter(f,false);
 			for(int i = 0; i < 16; i++){
 				ArrayList<String> l;
 				try{
@@ -65,9 +65,9 @@ public class Page implements Serializable{
 		return null;
 	}
 
-	public Void loadPage(String pagename){
+	public Void loadPage(String pathname){
 		try{
-			FileReader f = new FileReader("../Database/Pages/"+pagename+".csv");
+			FileReader f = new FileReader(pathname);
             BufferedReader bf = new BufferedReader(f);
             String line = bf.readLine();
             while(line != null){
@@ -92,13 +92,21 @@ public class Page implements Serializable{
 		return overall;
 	}
 
-	public ArrayList<String> getLine(int id){
-		for(int i = 0; i <16; i++){
-			if(page.get(i).get(0).equals(Integer.toString(id))){
-				return page.get(i);
-			}
+	public String[] getLine(int ln){
+		String[] line = new String[5];
+		ArrayList<String> l;
+		try{
+			l = page.get(ln);
 		}
-		return null;
+		catch(IndexOutOfBoundsException e){
+			return null;
+		}
+		line[1] = l.get(0);
+		line[0] = l.get(1);
+		line[2] = l.get(2);
+		line[3] = l.get(3);
+		line[4] = l.get(4);
+		return line;
 	}
 
 	public void setLine(ArrayList<String> l, String id, String ab, String dt,String in, String ex){
