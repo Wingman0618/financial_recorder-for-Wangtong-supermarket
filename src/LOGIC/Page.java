@@ -36,7 +36,7 @@ public class Page implements Serializable{
 			File f = new File(ppath);
 			f.createNewFile();
 			FileWriter fw = new FileWriter(f,false);
-			for(int i = 0; i < 16; i++){
+			for(int i = 0; i < page.size(); i++){
 				ArrayList<String> l;
 				try{
 					l = page.get(i);
