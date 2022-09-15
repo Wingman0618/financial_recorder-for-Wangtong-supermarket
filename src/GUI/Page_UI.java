@@ -18,6 +18,7 @@ import java.lang.Object;
 public class Page_UI{
 
     String session;
+    String username;
 
     Double valueOfINCOME=0.00;
     Double valueOfEXPEND=0.00;
@@ -25,10 +26,10 @@ public class Page_UI{
     Double valueOftotalIncome=0.00;
     Double valueOftotalExpend=0.00;
     Double valueOftotal=0.00;
+
     int index = 1;
 
     public void visualise(){
-        session = JOptionPane.showInputDialog(null, "请输入年份: ");
         String dir = "../Database/Pages/" + session + "/";
         File Dir = new File("../Database/Pages/" + session);
         Dir.mkdir();
@@ -39,19 +40,22 @@ public class Page_UI{
             check = new File(dir + Integer.toString(index) + ".csv");
             exist = check.exists();
         }
+
         JFrame jf = new JFrame("账目表");
-        jf.setSize(800, 655);
+        jf.setSize(800, 695);
         jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         JPanel line = new JPanel();
         JPanel page = new JPanel(new BorderLayout());
         JPanel statistics_1 = new JPanel();
         JPanel statistics_2 = new JPanel();
+        JPanel pageNumber = new JPanel();
         JPanel bottom = new JPanel();
 
         line.setLayout(null);
         line.setPreferredSize(new Dimension(800, 100));
         statistics_1.setPreferredSize(new Dimension(800, 25));
         statistics_2.setPreferredSize(new Dimension(800, 25));
+        pageNumber.setPreferredSize(new Dimension(800, 40));
         bottom.setPreferredSize(new Dimension(800, 40));
 
         JLabel id = new JLabel("货记编号");
@@ -66,6 +70,7 @@ public class Page_UI{
         JLabel totalIncome = new JLabel("累计收入: "+String.valueOf(valueOftotalIncome));
         JLabel totalExpend = new JLabel("累计支出: "+String.valueOf(valueOftotalExpend));
         JLabel total = new JLabel("累计总计: "+String.valueOf(valueOftotal));
+        JLabel numberOfpage = new JLabel("第"+String.valueOf(index)+"页");
 
         TextField id_TF = new TextField();
         TextField date_TF = new TextField();
@@ -74,12 +79,13 @@ public class Page_UI{
         TextField expend_TF = new TextField();
         JButton btn_add = new JButton("添加");
 
+        JButton btn_nextPage = new JButton("下一页");
+        JButton btn_lastPage = new JButton("上一页");
         JButton btn_delete = new JButton("删除");
         JButton btn_save = new JButton("另存本页至...");
         JButton btn_print = new JButton("打印");
-        JButton btn_nextPage = new JButton("下一页");
-        JButton btn_lastPage = new JButton("上一页");
-        JButton btn_save1 = new JButton("保存本页");
+        JButton btn_save1 = new JButton("确认");
+        JButton btn_modify = new JButton("修改");
         
         statistics_1.add(INCOME);
         statistics_1.add(EXPEND);
@@ -88,12 +94,15 @@ public class Page_UI{
         statistics_2.add(totalExpend);
         statistics_2.add(total);
 
-        bottom.add(btn_delete);
-        bottom.add(btn_save1);
-        bottom.add(btn_lastPage);
-        bottom.add(btn_nextPage);
-        bottom.add(btn_print);
+        pageNumber.add(btn_lastPage);
+        pageNumber.add(numberOfpage);
+        pageNumber.add(btn_nextPage);
+
         bottom.add(btn_save);
+        bottom.add(btn_print);
+        bottom.add(btn_delete);
+        bottom.add(btn_modify);
+        bottom.add(btn_save1);
 
         date.setBounds(60, 30, 60, 20);
         id.setBounds(150, 30, 50, 20);
@@ -137,12 +146,8 @@ public class Page_UI{
         pageTable.getTableHeader().setReorderingAllowed(false);
         pageTable.setEnabled(false);
 
-        //pageTable.setPreferredSize(new Dimension(800, 475));
-        //JScrollPane scrollPane = new JScrollPane(pageTable);
-
         page.add(pageTable.getTableHeader(), BorderLayout.NORTH);
         page.add(pageTable, BorderLayout.CENTER);
-
         btn_add.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 Pattern p = Pattern.compile("^[-\\+]?[\\d]*$");
@@ -227,8 +232,7 @@ public class Page_UI{
                             (String)pageTable.getValueAt(i, 2),//abstract
                             (String)pageTable.getValueAt(i, 3),//income
                             (String)pageTable.getValueAt(i, 4),//expence
-                            (String)pageTable.getValueAt(i, 5),//expence
-                            //overall
+                            (String)pageTable.getValueAt(i, 5),//overall
                         };
                         p.addLine(l);
                     }
@@ -256,7 +260,7 @@ public class Page_UI{
 
         btn_save1.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                save(pageTable, dir);
+                pageTable.setEnabled(false);
             }
         });
 
@@ -280,10 +284,10 @@ public class Page_UI{
                     Page pp = new Page();
                     pp.loadPage(dir + Integer.toString(index) + ".csv");
                     int id = 0;
-                    for(int i = 0; i < 17; i++){
+                    for(int i = 0; i < 16; i++){
                         String data[] = pp.getLine(i);
                         pageTableM.addRow(data);
-                        if(i < 15 && !data[0].equals(" ")){
+                        if(i < 14 && !data[0].equals(" ")){
                             valueOfINCOME = valueOfINCOME + Double.valueOf(data[3]);
                             valueOfEXPEND = valueOfEXPEND + Double.valueOf(data[4]);
                             valueOfTOTAL = valueOfINCOME + valueOfEXPEND;
@@ -296,15 +300,16 @@ public class Page_UI{
                     totalIncome.setText("累计收入: "+ Double.toString(valueOftotalIncome));
                     totalExpend.setText("累计支出: "+ Double.toString(valueOftotalExpend));
                     total.setText("累计总计: "+ Double.toString(valueOftotal));
+                    numberOfpage.setText("第"+String.valueOf(index)+"页");
     
                     if(id == 0)
                         id_TF.setText("");
                     else
                         id_TF.setText(Integer.toString(id + 1));
-                    date_TF.setText("");
-                    message_TF.setText("");
-                    income_TF.setText("");
-                    expend_TF.setText("");                
+                        date_TF.setText("");
+                        message_TF.setText("");
+                        income_TF.setText("");
+                        expend_TF.setText("");                
                     }
                 //not exist: create new page
                 else{
@@ -314,6 +319,7 @@ public class Page_UI{
                     totalIncome.setText("累计收入: "+ String.valueOf(valueOftotalIncome));
                     totalExpend.setText("累计支出: "+ String.valueOf(valueOftotalExpend));
                     total.setText("累计总计: "+ String.valueOf(valueOftotal));
+                    numberOfpage.setText("第"+String.valueOf(index)+"页");
 
                     id_TF.setText("");
                     date_TF.setText("");
@@ -345,10 +351,10 @@ public class Page_UI{
                 Page pp = new Page();
                 pp.loadPage(dir + Integer.toString(index) + ".csv");
                 int id = 0;
-                for(int i = 0; i < 17; i++){
+                for(int i = 0; i < 16; i++){
                     String data[] = pp.getLine(i);
                     pageTableM.addRow(data);
-                    if(i < 15 && !data[0].equals(" ")){
+                    if(i < 14 && !data[0].equals(" ")){
                         valueOfINCOME = valueOfINCOME + Double.valueOf(data[3]);
                         valueOfEXPEND = valueOfEXPEND + Double.valueOf(data[4]);
                         valueOfTOTAL = valueOfINCOME + valueOfEXPEND;
@@ -362,6 +368,7 @@ public class Page_UI{
                 totalIncome.setText("累计收入: "+ String.valueOf(valueOftotalIncome));
                 totalExpend.setText("累计支出: "+ String.valueOf(valueOftotalExpend));
                 total.setText("累计总计: "+ String.valueOf(valueOftotal));
+                numberOfpage.setText("第"+String.valueOf(index)+"页");
 
                 if(id == 0)
                     id_TF.setText("");
@@ -395,10 +402,30 @@ public class Page_UI{
             }
         });
 
+        btn_modify.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                if(pageTable.isEnabled()){
+                    JOptionPane.showMessageDialog(null, "当前已是修改模式");
+                }else{
+                    //String input = JOptionPane.showInputDialog(null, "请输入管理员密码: ");
+                    JPasswordField pwd = new JPasswordField(20);
+                    JOptionPane.showConfirmDialog(null, pwd, "请输入密码", JOptionPane.OK_CANCEL_OPTION);
+                    Login log = new Login();
+                    if(log.checkAccount(getName(), pwd.getText())){
+                        System.out.println("access");
+                        pageTable.setEnabled(true);
+                    }else{
+                        JOptionPane.showMessageDialog(null, "密码错误");
+                    }
+
+                }
+            }
+        });
+
         Box vbox = Box.createVerticalBox();
         vbox.add(statistics_1);
         vbox.add(statistics_2);
-        //vbox.add(statistics_3);
+        vbox.add(pageNumber);
         vbox.add(bottom);
 
         jf.add(line, BorderLayout.NORTH);
@@ -410,7 +437,7 @@ public class Page_UI{
 
     public void save(JTable t, String dir){
         Page p = new Page();
-        for(int i=0; i<15; i++){
+        for(int i=0; i<14; i++){
             try{
                 String l[] = {(String)t.getValueAt(i, 0),//date
                     (String)t.getValueAt(i, 1),//id
@@ -434,6 +461,22 @@ public class Page_UI{
         p.addLine(total);
         p.savePage(dir + Integer.toString(index) + ".csv");
 
+    }
+
+    public void setName(String s){
+        this.username = s;
+    }
+
+    public String getName(){
+        return username;
+    }
+
+    public void setSession(String s){
+        this.session = s;
+    }
+
+    public String getSession(){
+        return session;
     }
 
 

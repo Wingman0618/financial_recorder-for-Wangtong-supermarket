@@ -7,8 +7,7 @@ import java.awt.event.*;
 public class main_UI{
 
     private JButton btn_add;
-
-
+    private String username;
 
     public void visualise(){
         JFrame jf = new JFrame("万通超市财务流水账簿系统");
@@ -28,11 +27,22 @@ public class main_UI{
         btn_add.setBackground(Color.GRAY);
         btn_add.setForeground(Color.WHITE);
         btn_add.setBounds(275, 450, 200, 50);
+
         btn_add.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                Page_UI page_UI = new Page_UI();
-                page_UI.visualise();
-                jf.dispose();
+                String input = JOptionPane.showInputDialog(null, "请输入年份: ");
+                if(input != null){
+                    if(!input.equals("")){
+                        Page_UI page_UI = new Page_UI();
+                        page_UI.setSession(input);
+                        page_UI.setName(username);
+                        page_UI.visualise();
+                        jf.dispose();
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null, "请输入年份");
+                    }
+                }
             }
 
         });
@@ -55,6 +65,14 @@ public class main_UI{
         jf.setContentPane(jp_1);
         jf.setLocationRelativeTo(null);
         jf.setVisible(true);
+    }
+
+    public void setName(String s){
+        this.username = s;
+    }
+
+    public String getName(){
+        return username;
     }
 
 }

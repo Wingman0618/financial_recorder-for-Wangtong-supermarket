@@ -19,6 +19,7 @@ public class Login{
 
     public void login(){
         main_UI mainPage = new main_UI();
+        mainPage.setName(this.username);
         mainPage.visualise();
     }
 

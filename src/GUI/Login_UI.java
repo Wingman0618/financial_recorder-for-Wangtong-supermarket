@@ -36,7 +36,7 @@ public class Login_UI{
                 login.setUsername(userName.getText()) ;
                 login.setPassword(passWord.getText());
                 if(login.checkAccount(login.getUsername(),login.getPassword())){
-                    System.out.println("nb");
+                    System.out.println("success");
                     login.login();
                     jf.dispose();
                 }else{
