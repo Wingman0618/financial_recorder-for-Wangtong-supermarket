@@ -170,7 +170,7 @@ public class Page_UI{
                             message_TF.getText(), 
                             income_TF.getText(), 
                             "-"+expend_TF.getText(), 
-                            Double.toString(valueOfTOTAL)};
+                            Double.toString(Double.valueOf(income_TF.getText()) - Double.valueOf(expend_TF.getText()))};
                         pageTableM.addRow(data);
                         valueOftotalIncome = valueOftotalIncome + Double.valueOf(income_TF.getText());
                         valueOftotalExpend = valueOftotalExpend + Double.valueOf(expend_TF.getText());
@@ -203,7 +203,8 @@ public class Page_UI{
                     int row = Integer.valueOf(input);
                     pageTable.setEnabled(true);
                     if(row<=pageTable.getRowCount()){
-                        for(int n=1; n<5;n++){
+                        for(int n=0; n<6;n++){
+                            if(n == 1) continue;
                             pageTableM.setValueAt("", row-1, n);
                         }
                         pageTableM.setValueAt("已删除", row-1, 2);
@@ -226,7 +227,8 @@ public class Page_UI{
                             (String)pageTable.getValueAt(i, 2),//abstract
                             (String)pageTable.getValueAt(i, 3),//income
                             (String)pageTable.getValueAt(i, 4),//expence
-                            "结了个存"//overall
+                            (String)pageTable.getValueAt(i, 5),//expence
+                            //overall
                         };
                         p.addLine(l);
                     }
@@ -278,13 +280,10 @@ public class Page_UI{
                     Page pp = new Page();
                     pp.loadPage(dir + Integer.toString(index) + ".csv");
                     int id = 0;
-                    for(int i = 0; i < 15; i++){
+                    for(int i = 0; i < 17; i++){
                         String data[] = pp.getLine(i);
-                        if (data[0].equals(" ")){
-                            break;
-                        }
-                        else{
-                            pageTableM.addRow(data);
+                        pageTableM.addRow(data);
+                        if(i < 15 && !data[0].equals(" ")){
                             valueOfINCOME = valueOfINCOME + Double.valueOf(data[3]);
                             valueOfEXPEND = valueOfEXPEND + Double.valueOf(data[4]);
                             valueOfTOTAL = valueOfINCOME + valueOfEXPEND;
@@ -298,7 +297,10 @@ public class Page_UI{
                     totalExpend.setText("累计支出: "+ Double.toString(valueOftotalExpend));
                     total.setText("累计总计: "+ Double.toString(valueOftotal));
     
-                    id_TF.setText(Integer.toString(id + 1));
+                    if(id == 0)
+                        id_TF.setText("");
+                    else
+                        id_TF.setText(Integer.toString(id + 1));
                     date_TF.setText("");
                     message_TF.setText("");
                     income_TF.setText("");
@@ -343,20 +345,17 @@ public class Page_UI{
                 Page pp = new Page();
                 pp.loadPage(dir + Integer.toString(index) + ".csv");
                 int id = 0;
-                for(int i = 0; i < 15; i++){
+                for(int i = 0; i < 17; i++){
                     String data[] = pp.getLine(i);
-                    if (data[0].equals(" ")){
-                        break;
-                    }
-                    else{
-                        pageTableM.addRow(data);
+                    pageTableM.addRow(data);
+                    if(i < 15 && !data[0].equals(" ")){
                         valueOfINCOME = valueOfINCOME + Double.valueOf(data[3]);
                         valueOfEXPEND = valueOfEXPEND + Double.valueOf(data[4]);
                         valueOfTOTAL = valueOfINCOME + valueOfEXPEND;
                         id = Integer.valueOf(data[1]);
                     }
                 }
-
+                
                 INCOME.setText("总计收入: "+ String.valueOf(valueOfINCOME));
                 EXPEND.setText("总计支出: "+ String.valueOf(valueOfEXPEND));
                 TOTAL.setText("总计: "+ String.valueOf(valueOfTOTAL));
@@ -364,7 +363,10 @@ public class Page_UI{
                 totalExpend.setText("累计支出: "+ String.valueOf(valueOftotalExpend));
                 total.setText("累计总计: "+ String.valueOf(valueOftotal));
 
-                id_TF.setText(Integer.toString(id + 1));
+                if(id == 0)
+                    id_TF.setText("");
+                else
+                    id_TF.setText(Integer.toString(id + 1));
                 date_TF.setText("");
                 message_TF.setText("");
                 income_TF.setText("");
