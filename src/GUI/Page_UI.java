@@ -23,9 +23,9 @@ public class Page_UI{
     Double valueOfINCOME=0.00;
     Double valueOfEXPEND=0.00;
     Double valueOfTOTAL=0.00;
-    Double valueOftotalIncome=0.00;
-    Double valueOftotalExpend=0.00;
-    Double valueOftotal=0.00;
+    Double valueOftotalIncome;
+    Double valueOftotalExpend;
+    Double valueOftotal;
 
     int index = 1;
 
@@ -39,6 +39,19 @@ public class Page_UI{
             index++;
             check = new File(dir + Integer.toString(index) + ".csv");
             exist = check.exists();
+        }
+        if(index == 1){
+            valueOftotalIncome=0.00;
+            valueOftotalExpend=0.00;
+            valueOftotal=0.00;
+        }
+        else{
+            Page prevP = new Page();
+            prevP.loadPage(dir + Integer.toString(index - 1) + ".csv");
+            String[] prevL = prevP.getLine(15);
+            valueOftotalIncome = Double.valueOf(prevL[3]);
+            valueOftotalExpend = Double.valueOf(prevL[4]);
+            valueOftotal = Double.valueOf(prevL[5]);
         }
 
         JFrame jf = new JFrame("第 " + session + " 季度 账目表");
@@ -182,6 +195,7 @@ public class Page_UI{
                         valueOftotalIncome = valueOftotalIncome + Double.valueOf(income_TF.getText());
                         valueOftotalExpend = valueOftotalExpend + Double.valueOf(expend_TF.getText());
                         valueOftotal = valueOftotalIncome - valueOftotalExpend;
+                        save(pageTable, dir);
 
                         INCOME.setText("总计收入: "+ String.valueOf(valueOfINCOME));
                         EXPEND.setText("总计支出: "+ String.valueOf(valueOfEXPEND));
@@ -215,11 +229,12 @@ public class Page_UI{
                             pageTableM.setValueAt(" ", row-1, n);
                         }
                         pageTableM.setValueAt("已删除", row-1, 2);
+                        save(pageTable,dir);
                     }else{
-                        JOptionPane.showMessageDialog(null, "找不到对象QAQ");
+                        JOptionPane.showMessageDialog(null, "找不到对象");
                     }
                     pageTable.setEnabled(false);
-                }
+                }             
             }
         });
 
@@ -286,20 +301,22 @@ public class Page_UI{
                     Page pp = new Page();
                     pp.loadPage(dir + Integer.toString(index) + ".csv");
                     int id = 0;
-                    int i = 0;
-                    String data[] = pp.getLine(i);
-                    while (data != null){
-                        pageTableM.addRow(data);
-                        if(i < 14 && !data[0].equals(" ")){
-                            valueOfINCOME = valueOfINCOME + Double.valueOf(data[3]);
-                            valueOfEXPEND = valueOfEXPEND + Double.valueOf(data[4]);
-                            valueOfTOTAL = valueOfINCOME + valueOfEXPEND;
-                            id = Integer.valueOf(data[1]);
+                    for(int i = 0; i < 14; i++){
+                        String data[] = pp.getLine(i);
+                        if(data[1].equals(" ")){
+                            break;
                         }
-                        i++;
-                        data = pp.getLine(i);
-                    }
-                        INCOME.setText("总计收入: "+ Double.toString(valueOfINCOME));
+                        pageTableM.addRow(data);
+                        // valueOfINCOME = valueOfINCOME + Double.valueOf(data[3]);
+                        // valueOfEXPEND = valueOfEXPEND + (-1 * Double.valueOf(data[4]));
+                        // valueOfTOTAL = valueOfINCOME - valueOfEXPEND;
+                        id = Integer.valueOf(data[1]);
+                    }                
+                    String sum[] = pp.getLine(14);
+                    valueOfINCOME = Double.valueOf(sum[3]);
+                    valueOfEXPEND = Double.valueOf(sum[4]);
+                    valueOfTOTAL = Double.valueOf(sum[5]);
+                            INCOME.setText("总计收入: "+ Double.toString(valueOfINCOME));
                     EXPEND.setText("总计支出: "+ Double.toString(valueOfEXPEND));
                     TOTAL.setText("总计: "+ Double.toString(valueOfTOTAL));
                     totalIncome.setText("累计收入: "+ Double.toString(valueOftotalIncome));
@@ -356,20 +373,22 @@ public class Page_UI{
                 Page pp = new Page();
                 pp.loadPage(dir + Integer.toString(index) + ".csv");
                 int id = 0;
-                int i = 0;
-                String data[] = pp.getLine(i);
-                while (data != null){
-                    pageTableM.addRow(data);
-                    if(i < 14 && !data[0].equals(" ")){
-                        valueOfINCOME = valueOfINCOME + Double.valueOf(data[3]);
-                        valueOfEXPEND = valueOfEXPEND + Double.valueOf(data[4]);
-                        valueOfTOTAL = valueOfINCOME + valueOfEXPEND;
-                        id = Integer.valueOf(data[1]);
+                for(int i = 0; i < 14; i++){
+                    String data[] = pp.getLine(i);
+                    if(data[1].equals(" ")){
+                        break;
                     }
-                    i++;
-                    data = pp.getLine(i);
-                }
-                
+                    pageTableM.addRow(data);
+                    // valueOfINCOME = valueOfINCOME + Double.valueOf(data[3]);
+                    // valueOfEXPEND = valueOfEXPEND + (-1 * Double.valueOf(data[4]));
+                    // valueOfTOTAL = valueOfINCOME - valueOfEXPEND;
+                    id = Integer.valueOf(data[1]);
+                }    
+                String sum[] = pp.getLine(14);
+                valueOfINCOME = Double.valueOf(sum[3]);
+                valueOfEXPEND = Double.valueOf(sum[4]);
+                valueOfTOTAL = Double.valueOf(sum[5]);
+            
                 INCOME.setText("总计收入: "+ String.valueOf(valueOfINCOME));
                 EXPEND.setText("总计支出: "+ String.valueOf(valueOfEXPEND));
                 TOTAL.setText("总计: "+ String.valueOf(valueOfTOTAL));
@@ -445,9 +464,9 @@ public class Page_UI{
 
     public void save(JTable t, String dir){
         Page p = new Page();
-        // for(int i=0; i<14; i++){
-        for(int i=0; i < t.getRowCount(); i++){    
-            // try{
+        for(int i=0; i<14; i++){
+        // for(int i=0; i < t.getRowCount(); i++){    
+            try{
                 String l[] = {(String)t.getValueAt(i, 0),//date
                     (String)t.getValueAt(i, 1),//id
                     (String)t.getValueAt(i, 2),//abstract
@@ -456,18 +475,18 @@ public class Page_UI{
                     (String)t.getValueAt(i, 5)//overall
                 };
                 p.addLine(l);
-            // }
-            // catch(Exception exception){
-            //     String l[] = {" ", " ", "  ", " ", " ", " "};
-            //     p.addLine(l);
-            // }
+            }
+            catch(Exception exception){
+                String l[] = {" ", " ", "  ", " ", " ", " "};
+                p.addLine(l);
+            }
         }
-        // String pageOverall[]={"本页共计","/","/",String.valueOf(valueOfINCOME),
-        //     String.valueOf(valueOfEXPEND),String.valueOf(valueOfTOTAL)};
-        // String total[]={"累计","/","/",String.valueOf(valueOftotalIncome),
-        //     String.valueOf(valueOftotalExpend),String.valueOf(valueOftotal)};
-        // p.addLine(pageOverall);
-        // p.addLine(total);
+        String pageOverall[]={"本页共计","/","/",String.valueOf(valueOfINCOME),
+            String.valueOf(valueOfEXPEND),String.valueOf(valueOfTOTAL)};
+        String total[]={"累计","/","/",String.valueOf(valueOftotalIncome),
+            String.valueOf(valueOftotalExpend),String.valueOf(valueOftotal)};
+        p.addLine(pageOverall);
+        p.addLine(total);
         p.savePage(dir + Integer.toString(index) + ".csv");
 
     }
